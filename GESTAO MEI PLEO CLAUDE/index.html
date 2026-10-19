@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ateliê Gestão</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7C5CFF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="tailwind.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+*{-webkit-tap-highlight-color:transparent}html,body{overflow-x:hidden}body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:#F5F3FF;color:#0F0E17;-webkit-font-smoothing:antialiased;padding-bottom:96px;min-height:100vh;transition:background 0.3s,color 0.3s}.dark body{background:#0F0E17;color:#F5F3FF}.dark body::before{opacity:0.2}body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 15% 5%,rgba(124,92,255,.10),transparent 40%),radial-gradient(circle at 90% 10%,rgba(255,107,157,.08),transparent 40%),#F5F3FF;transition:opacity 0.3s}.font-display{font-family:'Sora',system-ui,sans-serif}.glass{background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}.dark .glass{background:rgba(26,25,38,.92)}.hero-glow::before{content:'';position:absolute;top:-40%;right:-20%;width:320px;height:320px;background:radial-gradient(circle,rgba(124,92,255,.55),transparent 70%);filter:blur(30px);pointer-events:none}.hero-glow::after{content:'';position:absolute;bottom:-50%;left:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(255,107,157,.4),transparent 70%);filter:blur(30px);pointer-events:none}.text-gradient{background:linear-gradient(135deg,#fff,#A78BFA);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.btn-gradient{background:linear-gradient(135deg,#7C5CFF,#FF6B9D);box-shadow:0 8px 24px rgba(124,92,255,.3);transition:transform .12s}.btn-gradient:active{transform:scale(.98)}.scrollbar-hide::-webkit-scrollbar{display:none}.scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}.modal-enter{animation:slideUp .3s cubic-bezier(.4,0,.2,1)}input,select,textarea{font-family:inherit}input:focus,select:focus,textarea:focus{outline:none;border-color:#7C5CFF;box-shadow:0 0 0 4px rgba(124,92,255,.10)}.view{display:none}.view.active{display:block;animation:fadeIn .3s ease}.mei-progress-bar{transition:width 1s cubic-bezier(.4,0,.2,1)}
+.recibo-paper{background:#fff;border-radius:16px;padding:24px;font-family:'Plus Jakarta Sans',sans-serif;color:#0F0E17;position:relative}.recibo-paper::before{content:'';position:absolute;left:0;right:0;top:-1px;height:8px;background:repeating-linear-gradient(90deg,#7C5CFF 0 12px,transparent 12px 24px);border-radius:16px 16px 0 0}.recibo-paper .linha{display:flex;justify-content:space-between;gap:10px;padding:6px 0;font-size:12px;border-bottom:1px dashed #E5E7EB}.recibo-paper .linha:last-child{border-bottom:none}.recibo-paper .linha .lbl{color:#6B7280;font-weight:600}.recibo-paper .linha .vlr{font-weight:700;text-align:right;word-break:break-word}
+.dark .bg-white{background-color:#1A1926!important;border-color:#2D2C3D!important;color:#F5F3FF}.dark .text-gray-900,.dark .text-ink{color:#F5F3FF!important}.dark .text-gray-500,.dark .text-gray-400{color:#9CA3AF!important}.dark .bg-brand-50,.dark .bg-brand-50\/50{background-color:#0F0E17!important}.dark .border-brand-50,.dark .border-brand-100{border-color:#2D2C3D!important}.dark select,.dark input,.dark textarea{background-color:#0F0E17!important;color:#F5F3FF!important;border-color:#2D2C3D!important}.dark .bg-gray-50{background-color:#1A1926!important}
+@media print{body *{visibility:hidden!important}#printArea,#printArea *{visibility:visible!important}#printArea{position:absolute;left:0;top:0;width:100%;padding:20px;background:#fff}.no-print{display:none!important}}
+</style>
+</head>
+<body class="max-w-2xl mx-auto">
+<header class="px-4 pt-4 pb-2 flex items-center justify-between">
+  <div class="flex items-center gap-3">
+    <div id="headerLogoContainer" class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-600 to-accent flex items-center justify-center text-lg shadow-lg shadow-brand-600/30 overflow-hidden flex-shrink-0"><span id="headerLogoIcon">🎨</span></div>
+    <div><h1 class="font-display text-[15px] font-bold tracking-tight truncate max-w-[130px]" id="headerEmpresaNome">Ateliê Gestão</h1><p class="text-[11px] text-gray-500 font-medium" id="headerDate">—</p></div>
+  </div>
+  <div class="flex gap-1 items-center">
+    <button onclick="toggleDarkMode()" class="text-[14px] w-8 h-8 flex items-center justify-center bg-white rounded-full border border-brand-100 dark:bg-gray-800 dark:border-gray-700" id="btnDark">🌙</button>
+    <button onclick="abrirModalEmpresa()" class="text-[11px] font-bold text-brand-600 px-2 py-1.5 rounded-full bg-white shadow-sm border border-brand-100">⚙️</button>
+    <button onclick="exportData()" class="text-[11px] font-bold text-brand-600 px-2 py-1.5 rounded-full bg-white shadow-sm border border-brand-100">⬇</button>
+    <button onclick="importData()" class="text-[11px] font-bold text-brand-600 px-2 py-1.5 rounded-full bg-white shadow-sm border border-brand-100">⬆</button>
+  </div>
+</header>
+<main class="px-4">
+  <!-- DASHBOARD -->
+  <section class="view active" id="view-dashboard">
+    <div id="avisoBackup" class="hidden mb-3 bg-orange-50 text-orange-800 border border-orange-200 text-[11px] p-3 rounded-xl"></div>
+    <div class="relative overflow-hidden rounded-[28px] bg-ink p-6 pt-5 text-white shadow-2xl shadow-ink/30 hero-glow">
+      <div class="relative z-10"><div class="text-[10px] font-bold uppercase text-white/50 mb-2">Faturamento do mês</div><div class="font-display text-[38px] font-extrabold text-gradient" id="heroFaturamento">R$ 0,00</div><div class="mt-3 text-[11px] text-white/50" id="heroDelta">—</div></div>
+    </div>
+    <div class="grid grid-cols-3 gap-2.5 -mt-4 relative z-10">
+      <div class="bg-white rounded-2xl p-3 shadow-lg border"><div class="text-[9px] font-bold text-gray-400 uppercase">Hoje</div><div class="font-display text-sm font-extrabold text-green-600 mt-0.5" id="fatHoje">R$ 0</div></div>
+      <div class="bg-white rounded-2xl p-3 shadow-lg border"><div class="text-[9px] font-bold text-gray-400 uppercase">Semana</div><div class="font-display text-sm font-extrabold text-brand-600 mt-0.5" id="fatSemana">R$ 0</div></div>
+      <div class="bg-white rounded-2xl p-3 shadow-lg border"><div class="text-[9px] font-bold text-gray-400 uppercase">Lucro bruto</div><div class="font-display text-sm font-extrabold text-pink-600 mt-0.5" id="lucroMini">R$ 0</div></div>
+    </div>
+    <div class="mt-5 bg-white rounded-2xl p-4 shadow-sm border"><div class="flex justify-between items-center mb-2"><h2 class="font-display text-[13px] font-bold">📝 Anotações Rápidas</h2><button onclick="salvarNotas()" class="text-[10px] bg-brand-100 text-brand-600 font-bold px-2 py-1 rounded">Salvar</button></div><textarea id="blocoNotas" rows="3" placeholder="Anote algo importante..." class="w-full bg-brand-50/50 border-2 border-brand-50 rounded-xl px-3 py-2 text-sm" onblur="salvarNotas()"></textarea></div>
+    <div class="flex justify-between mt-6 mb-3"><h2 class="font-display text-[15px] font-bold">🏛️ Teto MEI</h2><span class="text-[10px] font-bold text-brand-600 bg-brand-100 px-2 py-1 rounded" id="meiAnoLabel">—</span></div>
+    <div class="bg-white rounded-[22px] p-5 border">
+      <div class="flex justify-between mb-3"><div><div class="text-[10px] font-bold text-gray-400 uppercase">Acumulado</div><div class="font-display text-[26px] font-extrabold" id="meiAcumulado">R$ 0,00</div></div><div id="meiBadge" class="px-3 py-1.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700">OK</div></div>
+      <div class="h-3 bg-brand-50 rounded-full overflow-hidden mb-2"><div id="meiBar" class="h-full rounded-full bg-green-400" style="width:0%"></div></div>
+      <div class="flex justify-between text-[10px] font-bold text-gray-500"><span id="meiPct">0%</span><span id="meiRestante">R$ 81.000</span></div>
+      <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t"><div><div class="text-[9px] font-bold text-gray-400 uppercase">Média</div><div class="font-display text-sm font-extrabold text-brand-600" id="meiMediaMes">R$ 0</div></div><div><div class="text-[9px] font-bold text-gray-400 uppercase">Projeção</div><div class="font-display text-sm font-extrabold" id="meiProjecao">R$ 0</div></div></div>
+      <div id="meiAlerta" class="hidden mt-3 bg-red-50 text-red-800 text-[11px] p-3 rounded"></div>
+    </div>
+    <div class="flex justify-between mt-6 mb-3"><h2 class="font-display text-[15px] font-bold">Pedidos por status</h2></div>
+    <div class="grid grid-cols-2 gap-2.5" id="statusGrid"></div>
+    <div class="flex justify-between mt-6 mb-3"><h2 class="font-display text-[15px] font-bold">Alertas de estoque</h2></div>
+    <div id="alertasEstoque" class="space-y-2"></div>
+  </section>
+
+  <!-- CLIENTES -->
+  <section class="view" id="view-clientes">
+    <div class="bg-ink p-5 rounded-[22px] text-white mb-4 flex justify-between items-start"><div><h2 class="font-display font-bold">👥 Clientes</h2><p class="text-[11px] text-white/50" id="cliResumo">—</p></div><button onclick="abrirModalCliente()" class="btn-gradient text-white text-[11px] font-bold px-3 py-2 rounded-xl">+ Novo</button></div>
+    <input type="text" id="buscaCliente" oninput="renderClientes()" placeholder="🔍 Buscar cliente..." class="w-full bg-white rounded-xl px-4 py-3 text-sm border mb-3">
+    <div id="listaClientes" class="space-y-2"></div>
+  </section>
+
+  <!-- PEDIDOS -->
+  <section class="view" id="view-pedidos">
+    <div class="bg-ink p-5 rounded-[22px] text-white mb-4 flex justify-between items-start"><div><h2 class="font-display font-bold">📋 Pedidos</h2><p class="text-[11px] text-white/50" id="pedResumo">—</p></div><div class="flex gap-2"><button onclick="abrirCalc3D()" class="bg-white/10 text-white text-[11px] font-bold px-3 py-2 rounded-xl">🧊 3D</button><button onclick="abrirCalcMedidas()" class="bg-white/10 text-white text-[11px] font-bold px-3 py-2 rounded-xl">📐 Medidas</button></div></div>
+    <div class="flex gap-2 overflow-x-auto scrollbar-hide pb-3 mb-2 -mx-4 px-4">
+      <button onclick="filtrarPedidos('todos')" class="flex-shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-ink text-white" data-filter-btn="todos">Todos</button>
+      <button onclick="filtrarPedidos('arte')" class="flex-shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-white text-gray-500 border" data-filter-btn="arte">🎨 Arte</button>
+      <button onclick="filtrarPedidos('producao')" class="flex-shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-white text-gray-500 border" data-filter-btn="producao">⚙️ Produção</button>
+      <button onclick="filtrarPedidos('pronto')" class="flex-shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-white text-gray-500 border" data-filter-btn="pronto">✅ Pronto</button>
+      <button onclick="filtrarPedidos('entregue')" class="flex-shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-white text-gray-500 border" data-filter-btn="entregue">📦 Entregue</button>
+    </div>
+    <div id="listaPedidos" class="space-y-2"></div>
+  </section>
+
+  <!-- ORÇAMENTOS -->
+  <section class="view" id="view-orcamentos">
+    <div class="bg-ink p-5 rounded-[22px] text-white mb-4 flex justify-between items-start"><div><h2 class="font-display font-bold">📝 Orçamentos</h2><p class="text-[11px] text-white/50" id="orcResumo">—</p></div><button onclick="abrirModalOrcamento()" class="btn-gradient text-white text-[11px] font-bold px-3 py-2 rounded-xl">+ Novo</button></div>
+    <div id="listaOrcamentos" class="space-y-2"></div>
+  </section>
+
+  <!-- ESTOQUE -->
+  <section class="view" id="view-estoque">
+    <div class="bg-ink p-5 rounded-[22px] text-white mb-4 flex justify-between items-start"><div><h2 class="font-display font-bold">📦 Estoque</h2><p class="text-[11px] text-white/50" id="estResumo">—</p></div><button onclick="abrirModalInsumo()" class="btn-gradient text-white text-[11px] font-bold px-3 py-2 rounded-xl">+ Adicionar</button></div>
+    <div id="listaEstoque" class="space-y-2"></div>
+  </section>
+
+  <!-- FINANCEIRO -->
+  <section class="view" id="view-financeiro">
+    <div class="bg-ink p-5 rounded-[22px] text-white mb-4 flex justify-between items-start"><div><h2 class="font-display font-bold">💰 Caixa</h2><p class="text-[11px] text-white/50" id="finResumo">—</p></div><button onclick="abrirModalDespesa()" class="btn-gradient text-white text-[11px] font-bold px-3 py-2 rounded-xl">+ Despesa</button></div>
+    <div class="flex gap-2 mb-4">
+      <select id="filtroMes" onchange="renderFinanceiro()" class="flex-1 bg-white border rounded-xl px-3 py-2 text-sm font-bold text-gray-600 shadow-sm"><option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option><option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option><option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option><option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option></select>
+      <input type="number" id="filtroAno" onchange="renderFinanceiro()" class="w-20 bg-white border rounded-xl px-3 py-2 text-sm font-bold text-center shadow-sm">
+      <button onclick="gerarRelatorioPDF()" class="bg-ink text-white font-bold px-3 py-2 rounded-xl text-sm" title="Baixar Relatório do Mês">📄</button>
+    </div>
+    <div class="grid grid-cols-3 gap-2.5 mb-4">
+      <div class="bg-white rounded-2xl p-3 border"><div class="text-[9px] font-bold text-gray-400 uppercase">Entradas</div><div class="font-display text-sm font-extrabold text-green-600" id="finReceitas">R$ 0</div></div>
+      <div class="bg-white rounded-2xl p-3 border"><div class="text-[9px] font-bold text-gray-400 uppercase">Saídas</div><div class="font-display text-sm font-extrabold text-pink-600" id="finDespesas">R$ 0</div></div>
+      <div class="bg-white rounded-2xl p-3 border"><div class="text-[9px] font-bold text-gray-400 uppercase">Saldo</div><div class="font-display text-sm font-extrabold text-brand-600" id="finSaldo">R$ 0</div></div>
+    </div>
+    <div class="flex justify-between mb-3"><h2 class="font-display text-[15px] font-bold">Histórico MEI <span id="meiAnoHist" class="text-brand-600"></span></h2></div>
+    <div class="bg-white rounded-[22px] p-4 border mb-5"><div class="flex justify-between mb-3"><div><div class="text-[9px] font-bold text-gray-400 uppercase">Total do Ano</div><div class="font-display text-lg font-extrabold" id="meiHistTotal">R$ 0,00</div></div><div class="text-[10px] font-bold text-gray-500"><span id="meiHistPct">0</span>%</div></div><div id="meiHistMeses" class="space-y-1.5"></div></div>
+    <div class="flex justify-between mb-3"><h2 class="font-display text-[15px] font-bold">Movimentações</h2><span class="text-[10px] font-bold text-gray-400 uppercase" id="finMovCount">0</span></div>
+    <div id="listaMovimentacoes" class="space-y-2"></div>
+  </section>
+</main>
+
+<button onclick="verificaAbaFab()" class="fixed bottom-24 right-5 w-14 h-14 rounded-full btn-gradient text-white text-3xl flex items-center justify-center z-40">+</button>
+
+<nav class="fixed bottom-0 inset-x-0 z-50 glass border-t flex justify-around py-2">
+  <button onclick="trocarView('dashboard',this)" class="flex flex-col items-center text-brand-600 w-1/5"><span class="text-lg">◈</span><span class="text-[9px] font-bold">Painel</span></button>
+  <button onclick="trocarView('clientes',this)" class="flex flex-col items-center text-gray-400 w-1/5"><span class="text-lg">👥</span><span class="text-[9px] font-bold">Clientes</span></button>
+  <button onclick="trocarView('pedidos',this)" class="flex flex-col items-center text-gray-400 w-1/5"><span class="text-lg">📋</span><span class="text-[9px] font-bold">Pedidos</span></button>
+  <button onclick="trocarView('orcamentos',this)" class="flex flex-col items-center text-gray-400 w-1/5"><span class="text-lg">📝</span><span class="text-[9px] font-bold">Orçam.</span></button>
+  <button onclick="trocarView('estoque',this)" class="flex flex-col items-center text-gray-400 w-1/5"><span class="text-lg">▦</span><span class="text-[9px] font-bold">Estoque</span></button>
+  <button onclick="trocarView('financeiro',this)" class="flex flex-col items-center text-gray-400 w-1/5"><span class="text-lg">$</span><span class="text-[9px] font-bold">Caixa</span></button>
+</nav>
+
+<!-- MODAIS -->
+<div id="modalCliente" class="fixed inset-0 bg-black/60 z-[100] hidden items-end justify-center" style="backdrop-filter:blur(4px)">
+  <div class="bg-white w-full max-w-lg rounded-t-3xl p-6 modal-enter">
+    <div class="flex justify-between mb-4"><h2 class="font-bold text-lg" id="modalClienteTitulo">Cliente</h2><button onclick="fecharModal('modalCliente')" class="text-gray-400 text-xl">✕</button></div>
+    <input type="hidden" id="cliId">
+    <label class="text-[10px] font-bold uppercase text-gray-400">Nome</label><input type="text" id="cliNome" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <label class="text-[10px] font-bold uppercase text-gray-400">WhatsApp</label><input type="tel" id="cliWhats" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <label class="text-[10px] font-bold uppercase text-gray-400">Email</label><input type="email" id="cliEmail" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <button onclick="salvarCliente()" class="w-full btn-gradient text-white font-bold py-3 rounded-xl mb-2">Salvar</button>
+    <button id="btnExcluirCliente" onclick="excluirCliente()" class="w-full bg-red-50 text-red-500 font-bold py-3 rounded-xl hidden mb-2">Excluir</button>
+    <button onclick="fecharModal('modalCliente')" class="w-full bg-gray-100 font-bold py-3 rounded-xl">Cancelar</button>
+  </div>
+</div>
+
+<div id="modalClienteRapido" class="fixed inset-0 bg-black/60 z-[110] hidden items-end justify-center" style="backdrop-filter:blur(4px)">
+  <div class="bg-white w-full max-w-lg rounded-t-3xl p-6 modal-enter">
+    <div class="flex justify-between mb-4"><h2 class="font-bold text-lg">Cadastro Rápido</h2><button onclick="fecharModal('modalClienteRapido')" class="text-gray-400 text-xl">✕</button></div>
+    <label class="text-[10px] font-bold uppercase text-gray-400">Nome</label><input type="text" id="crNome" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <label class="text-[10px] font-bold uppercase text-gray-400">WhatsApp</label><input type="tel" id="crWhats" class="w-full bg-gray-50 border rounded-xl p-3 mb-4">
+    <button onclick="salvarClienteRapido()" class="w-full btn-gradient text-white font-bold py-3 rounded-xl mb-2">Cadastrar e Usar</button>
+    <button onclick="fecharModal('modalClienteRapido')" class="w-full bg-gray-100 font-bold py-3 rounded-xl">Cancelar</button>
+  </div>
+</div>
+
+<div id="modalPedido" class="fixed inset-0 bg-black/60 z-[100] hidden items-end justify-center" style="backdrop-filter:blur(4px)">
+  <div class="bg-white w-full max-w-lg rounded-t-3xl p-6 modal-enter max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between mb-4"><h2 class="font-bold text-lg" id="modalPedidoTitulo">Pedido</h2><button onclick="fecharModal('modalPedido')" class="text-gray-400 text-xl">✕</button></div>
+    <input type="hidden" id="pedId">
+    <label class="text-[10px] font-bold uppercase text-gray-400">Cliente</label>
+    <div class="flex gap-2 mb-3"><select id="pedCliente" class="flex-1 bg-gray-50 border rounded-xl p-3"></select><button onclick="abrirModalClienteRapido()" class="btn-gradient text-white text-[11px] font-bold px-3 rounded-xl">+</button></div>
+    <label class="text-[10px] font-bold uppercase text-gray-400">Produto</label>
+    <input type="text" id="pedProduto" list="listaProdutos" placeholder="Ex: 50 lembrancinhas" class="w-full bg-gray-50 border rounded-xl p-3 mb-3"><datalist id="listaProdutos"><option value="Lembrancinhas"><option value="Topo de Bolo"><option value="Caneca"><option value="Impressão 3D"><option value="Serviços Gráficos"></datalist>
+    <label class="text-[10px] font-bold uppercase text-gray-400">Prazo de entrega</label>
+    <input type="date" id="pedPrazo" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <div class="grid grid-cols-2 gap-2 mb-3"><div><label class="text-[10px] font-bold uppercase text-gray-400">Valor</label><input type="number" id="pedValor" oninput="updateSinalInfo()" class="w-full bg-gray-50 border rounded-xl p-3"></div><div><label class="text-[10px] font-bold uppercase text-gray-400">Custo</label><input type="number" id="pedCusto" class="w-full bg-gray-50 border rounded-xl p-3"></div></div>
+    <div class="bg-gray-50 rounded-xl p-3 mb-3">
+      <div class="flex justify-between mb-2"><span class="text-[11px] font-bold">Sinal pago?</span><input type="checkbox" id="pedSinal" class="w-5 h-5" onchange="updateSinalInfo()"></div>
+      <div id="wrapSinalPct" class="hidden"><input type="number" id="pedSinalPct" value="50" oninput="updateSinalInfo()" class="w-full border rounded-lg p-2 text-sm mt-1"></div>
+      <div id="sinalInfo" class="text-[10px] mt-2 hidden"></div>
+    </div>
+    <label class="text-[10px] font-bold uppercase text-gray-400">Status</label>
+    <select id="pedStatus" class="w-full bg-gray-50 border rounded-xl p-3 mb-4"><option value="arte">Aguard. Arte</option><option value="producao">Em Produção</option><option value="pronto">Pronto</option><option value="entregue">Entregue</option></select>
+    <button onclick="salvarPedido()" class="w-full btn-gradient text-white font-bold py-3 rounded-xl mb-2">Salvar</button>
+    <button id="btnExcluirPedido" onclick="excluirPedido()" class="w-full bg-red-50 text-red-500 font-bold py-3 rounded-xl hidden mb-2">Excluir</button>
+    <button onclick="fecharModal('modalPedido')" class="w-full bg-gray-100 font-bold py-3 rounded-xl">Cancelar</button>
+  </div>
+</div>
+
+<div id="modalOrcamento" class="fixed inset-0 bg-black/60 z-[100] hidden items-end justify-center" style="backdrop-filter:blur(4px)">
+  <div class="bg-white w-full max-w-lg rounded-t-3xl p-6 modal-enter max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between mb-4"><h2 class="font-bold text-lg">Orçamento</h2><button onclick="fecharModal('modalOrcamento')" class="text-gray-400 text-xl">✕</button></div>
+    <label class="text-[10px] font-bold uppercase text-gray-400">Cliente</label>
+    <div class="flex gap-2 mb-3"><select id="orcCliente" class="flex-1 bg-gray-50 border rounded-xl p-3"></select><button onclick="abrirModalClienteRapido()" class="btn-gradient text-white text-[11px] font-bold px-3 rounded-xl">+</button></div>
+    <label class="text-[10px] font-bold uppercase text-gray-400">Descrição / Produto</label><input type="text" id="orcProduto" placeholder="Ex: 50 canecas personalizadas" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <label class="text-[10px] font-bold uppercase text-gray-400">Valor Estimado</label><input type="number" id="orcValor" class="w-full bg-gray-50 border rounded-xl p-3 mb-4">
+    <button onclick="salvarOrcamento()" class="w-full btn-gradient text-white font-bold py-3 rounded-xl mb-2">Salvar Orçamento</button>
+    <button onclick="fecharModal('modalOrcamento')" class="w-full bg-gray-100 font-bold py-3 rounded-xl">Cancelar</button>
+  </div>
+</div>
+
+<div id="modalPagamento" class="fixed inset-0 bg-black/60 z-[110] hidden items-center justify-center" style="backdrop-filter:blur(4px)">
+  <div class="bg-white w-full max-w-sm rounded-3xl p-6 m-4 text-center">
+    <h2 class="font-bold text-lg mb-2">Como foi pago?</h2>
+    <p class="text-xs text-gray-500 mb-4">Selecione para registrar no caixa.</p>
+    <div class="grid grid-cols-2 gap-2">
+      <button onclick="confirmarPagamento('Pix')" class="bg-green-100 text-green-700 font-bold py-3 rounded-xl">💳 Pix</button>
+      <button onclick="confirmarPagamento('Cartão')" class="bg-blue-100 text-blue-700 font-bold py-3 rounded-xl">💳 Cartão</button>
+      <button onclick="confirmarPagamento('Dinheiro')" class="bg-gray-100 text-gray-700 font-bold py-3 rounded-xl">💵 Dinheiro</button>
+      <button onclick="confirmarPagamento('Outro')" class="bg-gray-100 text-gray-700 font-bold py-3 rounded-xl">Outro</button>
+    </div>
+    <button onclick="fecharModal('modalPagamento')" class="mt-4 text-xs text-gray-500 underline">Cancelar</button>
+  </div>
+</div>
+
+<div id="modalDespesa" class="fixed inset-0 bg-black/60 z-[100] hidden items-end justify-center" style="backdrop-filter:blur(4px)">
+  <div class="bg-white w-full max-w-lg rounded-t-3xl p-6 modal-enter">
+    <div class="flex justify-between mb-4"><h2 class="font-bold text-lg">Nova Despesa</h2><button onclick="fecharModal('modalDespesa')" class="text-gray-400 text-xl">✕</button></div>
+    <label class="text-[10px] font-bold uppercase text-gray-400">Descrição</label><input type="text" id="desDesc" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <div class="grid grid-cols-2 gap-2 mb-3">
+      <div><label class="text-[10px] font-bold uppercase text-gray-400">Valor (R$)</label><input type="number" id="desValor" class="w-full bg-gray-50 border rounded-xl p-3"></div>
+      <div><label class="text-[10px] font-bold uppercase text-gray-400">Categoria</label><select id="desCat" class="w-full bg-gray-50 border rounded-xl p-3"><option>Material</option><option>Aluguel</option><option>Energia/Água</option><option>Marketing</option><option>Impostos</option><option>Outro</option></select></div>
+    </div>
+    <label class="text-[10px] font-bold uppercase text-gray-400">Forma de Pagamento</label>
+    <select id="desPgto" class="w-full bg-gray-50 border rounded-xl p-3 mb-4"><option>Pix</option><option>Cartão</option><option>Dinheiro</option><option>Boleto</option></select>
+    <button onclick="salvarDespesa()" class="w-full btn-gradient text-white font-bold py-3 rounded-xl mb-2">Salvar Despesa</button>
+    <button onclick="fecharModal('modalDespesa')" class="w-full bg-gray-100 font-bold py-3 rounded-xl">Cancelar</button>
+  </div>
+</div>
+
+<div id="modalInsumo" class="fixed inset-0 bg-black/60 z-[100] hidden items-end justify-center" style="backdrop-filter:blur(4px)">
+  <div class="bg-white w-full max-w-lg rounded-t-3xl p-6 modal-enter">
+    <div class="flex justify-between mb-4"><h2 class="font-bold text-lg" id="modalInsumoTitulo">Insumo</h2><button onclick="fecharModal('modalInsumo')" class="text-gray-400 text-xl">✕</button></div>
+    <input type="hidden" id="insId">
+    <label class="text-[10px] font-bold uppercase text-gray-400">Nome</label><input type="text" id="insNome" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <div class="grid grid-cols-2 gap-2 mb-4">
+      <div><label class="text-[10px] font-bold uppercase text-gray-400">Qtd Atual</label><input type="number" id="insQtd" class="w-full bg-gray-50 border rounded-xl p-3"></div>
+      <div><label class="text-[10px] font-bold uppercase text-gray-400">Qtd Mínima</label><input type="number" id="insMin" class="w-full bg-gray-50 border rounded-xl p-3"></div>
+    </div>
+    <button onclick="salvarInsumo()" class="w-full btn-gradient text-white font-bold py-3 rounded-xl mb-2">Salvar</button>
+    <button id="btnExcluirInsumo" onclick="excluirInsumo()" class="w-full bg-red-50 text-red-500 font-bold py-3 rounded-xl hidden mb-2">Excluir</button>
+    <button onclick="fecharModal('modalInsumo')" class="w-full bg-gray-100 font-bold py-3 rounded-xl">Cancelar</button>
+  </div>
+</div>
+
+<div id="modalEmpresa" class="fixed inset-0 bg-black/60 z-[100] hidden items-end justify-center" style="backdrop-filter:blur(4px)">
+  <div class="bg-white w-full max-w-lg rounded-t-3xl p-6 modal-enter max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between mb-4"><h2 class="font-bold text-lg">Empresa</h2><button onclick="fecharModal('modalEmpresa')" class="text-gray-400 text-xl">✕</button></div>
+    <div class="flex justify-center mb-4"><div onclick="document.getElementById('empLogoInput').click()" class="w-20 h-20 rounded-xl bg-gray-100 border border-dashed flex items-center justify-center cursor-pointer overflow-hidden" id="previewLogo"><span class="text-gray-400">📷</span></div><input type="file" id="empLogoInput" class="hidden" onchange="processarLogo(this)"></div>
+    <input type="text" id="empNome" placeholder="Razão Social" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <input type="text" id="empFantasia" placeholder="Nome Fantasia" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <input type="text" id="empCnpj" placeholder="CNPJ" oninput="mascaraCnpj(this)" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <input type="tel" id="empTel" placeholder="Telefone" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <label class="text-[10px] font-bold uppercase text-gray-400">Início do MEI (só se abriu este ano)</label>
+    <input type="month" id="empMeiInicio" class="w-full bg-gray-50 border rounded-xl p-3 mb-1">
+    <p class="text-[10px] text-gray-400 mb-4">Neste caso o teto é proporcional: R$ 6.750 por mês de atividade.</p>
+    <button onclick="salvarEmpresa()" class="w-full btn-gradient text-white font-bold py-3 rounded-xl mb-2">Salvar</button>
+    <button onclick="fecharModal('modalEmpresa')" class="w-full bg-gray-100 font-bold py-3 rounded-xl">Cancelar</button>
+  </div>
+</div>
+
+<div id="modalCalc3D" class="fixed inset-0 bg-black/60 z-[100] hidden items-end justify-center" style="backdrop-filter:blur(4px)">
+  <div class="bg-white w-full max-w-lg rounded-t-3xl p-6 modal-enter">
+    <div class="flex justify-between mb-4"><h2 class="font-bold text-lg">Calculadora 3D</h2><button onclick="fecharModal('modalCalc3D')" class="text-gray-400 text-xl">✕</button></div>
+    <div class="grid grid-cols-2 gap-2 mb-3"><input type="number" id="c3dPeso" placeholder="Peso(g)" value="50" oninput="calc3D()" class="bg-gray-50 border rounded-xl p-3"><input type="number" id="c3dHoras" placeholder="Horas" value="4" oninput="calc3D()" class="bg-gray-50 border rounded-xl p-3"></div>
+    <div class="grid grid-cols-2 gap-2 mb-3"><input type="number" id="c3dCustoG" placeholder="R$/g" value="0.15" step="0.01" oninput="calc3D()" class="bg-gray-50 border rounded-xl p-3"><input type="number" id="c3dEnergia" placeholder="R$/h" value="0.8" step="0.01" oninput="calc3D()" class="bg-gray-50 border rounded-xl p-3"></div>
+    <input type="number" id="c3dMargem" placeholder="Margem %" value="150" oninput="calc3D()" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <div class="bg-gray-900 text-white p-4 rounded-xl mb-4"><div class="text-xs flex justify-between mb-1"><span>Custo:</span><span id="c3dResCusto">R$ 0</span></div><div class="text-lg font-bold flex justify-between"><span>Preço:</span><span id="c3dResFinal" class="text-green-400">R$ 0</span></div></div>
+    <button onclick="usarCalc3D()" class="w-full btn-gradient text-white font-bold py-3 rounded-xl mb-2">Usar no Pedido</button>
+    <button onclick="fecharModal('modalCalc3D')" class="w-full bg-gray-100 font-bold py-3 rounded-xl">Fechar</button>
+  </div>
+</div>
+
+<div id="modalCalcMedidas" class="fixed inset-0 bg-black/60 z-[100] hidden items-end justify-center" style="backdrop-filter:blur(4px)">
+  <div class="bg-white w-full max-w-lg rounded-t-3xl p-6 modal-enter">
+    <div class="flex justify-between mb-4"><h2 class="font-bold text-lg">Medidas</h2><button onclick="fecharModal('modalCalcMedidas')" class="text-gray-400 text-xl">✕</button></div>
+    <div class="grid grid-cols-2 gap-2 mb-3"><input type="number" id="cmLarg" placeholder="Largura(cm)" value="20" oninput="calcMedidas()" class="bg-gray-50 border rounded-xl p-3"><input type="number" id="cmAlt" placeholder="Altura(cm)" value="30" oninput="calcMedidas()" class="bg-gray-50 border rounded-xl p-3"></div>
+    <input type="number" id="cmPrecoM2" placeholder="R$/m²" value="150" oninput="calcMedidas()" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <input type="number" id="cmMargem" placeholder="Margem %" value="100" oninput="calcMedidas()" class="w-full bg-gray-50 border rounded-xl p-3 mb-3">
+    <div class="bg-gray-900 text-white p-4 rounded-xl mb-4"><div class="text-xs flex justify-between mb-1"><span>Custo:</span><span id="cmResCusto">R$ 0</span></div><div class="text-lg font-bold flex justify-between"><span>Preço:</span><span id="cmResFinal" class="text-green-400">R$ 0</span></div></div>
+    <button onclick="usarCalcMedidas()" class="w-full btn-gradient text-white font-bold py-3 rounded-xl mb-2">Usar no Pedido</button>
+    <button onclick="fecharModal('modalCalcMedidas')" class="w-full bg-gray-100 font-bold py-3 rounded-xl">Fechar</button>
+  </div>
+</div>
+
+<div id="modalRecibo" class="fixed inset-0 bg-black/70 z-[120] hidden items-start justify-center overflow-y-auto py-6 px-3">
+  <div class="bg-white w-full max-w-lg rounded-3xl p-5 modal-enter">
+    <div class="flex justify-between mb-4 no-print"><h2 class="font-bold text-lg">Recibo</h2><button onclick="fecharModal('modalRecibo')" class="text-gray-400 text-xl">✕</button></div>
+    <div id="printArea"><div class="recibo-paper"><div class="text-center mb-4"><div class="font-bold text-lg" id="recEmpresaNome">—</div><div class="text-[10px] text-gray-500 mt-1" id="recEmpresaCnpj">—</div></div><div class="text-center my-4 bg-gray-100 py-1 rounded font-bold text-xs uppercase">Recibo</div><div class="space-y-1 mb-4 text-xs"><div class="linha"><span class="lbl">Cliente</span><span class="vlr" id="recCliente">—</span></div><div class="linha"><span class="lbl">Produto</span><span class="vlr" id="recProduto">—</span></div><div class="linha"><span class="lbl">Data</span><span class="vlr" id="recData">—</span></div></div><div class="bg-gray-50 rounded-xl p-4 mb-4"><div class="flex justify-between font-bold text-lg"><span>Total</span><span id="recValor">R$ 0</span></div><div class="flex justify-between text-xs text-gray-500 mt-1"><span>Restante</span><span id="recRestante">R$ 0</span></div></div></div></div>
+    <div class="grid grid-cols-2 gap-2 mt-4 no-print"><button onclick="window.print()" class="bg-gray-900 text-white font-bold py-3 rounded-xl text-xs">🖨️ Imprimir</button><button onclick="gerarPDF()" class="bg-green-500 text-white font-bold py-3 rounded-xl text-xs">📄 PDF</button><button onclick="copiarEmail()" class="bg-gray-200 font-bold py-3 rounded-xl text-xs">📋 Copiar texto</button><button onclick="fecharModal('modalRecibo')" class="bg-gray-100 font-bold py-3 rounded-xl text-xs">Fechar</button></div>
+  </div>
+</div>
+
+<div id="modalNotificacao" class="fixed inset-0 bg-black/60 z-[100] hidden items-end justify-center" style="backdrop-filter:blur(4px)">
+  <div class="bg-white w-full max-w-lg rounded-t-3xl p-6 modal-enter">
+    <div class="flex justify-between mb-4"><h2 class="font-bold text-lg">Avisar Cliente</h2><button onclick="fecharModal('modalNotificacao')" class="text-gray-400 text-xl">✕</button></div>
+    <p class="text-xs text-gray-500 mb-4">Escolha o aviso para enviar no WhatsApp do cliente:</p>
+    <div class="space-y-2">
+      <button onclick="enviarWhats('Oie! Seu pedido já está pronto para ser retirado. 😊')" class="w-full text-left p-3 border rounded-xl hover:bg-gray-50"><b>✅ Pedido Pronto:</b> Avisar que já pode retirar.</button>
+      <button onclick="enviarWhats('Olá! Passando para avisar que sua arte já está em produção. 🎨')" class="w-full text-left p-3 border rounded-xl hover:bg-gray-50"><b>⚙️ Em Produção:</b> Avisar que já começou.</button>
+      <button onclick="enviarWhats('Olá! Precisamos de algumas informações para iniciar a arte do seu pedido. Podemos falar?')" class="w-full text-left p-3 border rounded-xl hover:bg-gray-50"><b>🎨 Cobrar Arte:</b> Pedir detalhes.</button>
+    </div>
+    <button onclick="fecharModal('modalNotificacao')" class="mt-4 text-xs text-gray-500 underline w-full text-center">Cancelar</button>
+  </div>
+</div>
+
+<div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-[200] bg-gray-900 text-white text-xs font-bold px-4 py-3 rounded-xl opacity-0 pointer-events-none transition-opacity"></div>
+
+<script>
+const META_MEI = 81000;
+function tetoMei(ano){ const i=DB.empresa.meiInicio; if(i){ const [y,m]=i.split('-').map(Number); if(y===ano) return 6750*(12-m+1); } return META_MEI; }
+function mesesMei(ano){ const i=DB.empresa.meiInicio; if(i){ const [y,m]=i.split('-').map(Number); if(y===ano) return {ativos:Math.max(1,new Date().getMonth()+1-(m-1)),total:12-m+1}; } return {ativos:new Date().getMonth()+1,total:12}; }
+const LS_KEY = 'atelie_gestao_v6';
+
+const DB = { clientes: [], pedidos: [], orcamentos: [], estoque: [], movimentacoes: [], empresa: { nome:'', fantasia:'', cnpj:'', tel:'', logo:'' } };
+
+function persistir(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(DB)); }catch(e){ toast('⚠️ Sem espaço para salvar! Baixe um backup.'); } }
+
+function carregar(){
+  try {
+    const raw = localStorage.getItem(LS_KEY) || localStorage.getItem('atelie_gestao_v5');
+    if(raw){
+      const p = JSON.parse(raw);
+      DB.clientes = p.clientes || [];
+      DB.pedidos = p.pedidos || [];
+      DB.orcamentos = p.orcamentos || [];
+      DB.estoque = p.estoque || [];
+      DB.movimentacoes = p.movimentacoes || [];
+      DB.empresa = p.empresa || DB.empresa;
+    } else { seed(); }
+  } catch(e){ seed(); }
+}
+
+function migrarSinal(){ let n=0; DB.pedidos.forEach(p=>{ if(p.sinalPago && !p.sinalReg && p.valor>0){ p.sinalReg=p.valor*(p.sinalPct||50)/100; DB.movimentacoes.push({id:uid()*100+n,tipo:'entrada',desc:`Sinal Pedido #${p.id} - ${p.clienteNome}`,valor:p.sinalReg,cat:'Pedido',pgto:'Sinal',data:p.data}); n++; } }); if(n){ persistir(); setTimeout(()=>toast(`${n} sinal(is) antigo(s) lançado(s) no caixa ✓`),700); } }
+
+function seed(){
+  const d = (n) => { const x = new Date(); x.setDate(x.getDate()-n); return x.toISOString(); };
+  DB.clientes = [{id:1, nome:'Maria Silva', whats:'11999990001'}];
+  DB.pedidos = [{id:101, clienteId:1, clienteNome:'Maria Silva', produto:'Lembrancinhas', valor:180, custo:60, status:'producao', sinalPago:false, data:d(0)}];
+  DB.orcamentos = [{id:201, clienteId:1, clienteNome:'Maria Silva', produto:'Canecas', valor:200, data:d(0)}];
+  DB.estoque = [{id:1, nome:'Papel A4', qtd:12, min:20, unid:'folhas'}];
+  DB.movimentacoes = [{id:301, tipo:'entrada', desc:'Pedido #100', valor:150, cat:'Pedido', pgto:'Pix', data:d(2)}];
+  DB.empresa = { nome:'Ateliê Maria', fantasia:'Ateliê Maria', cnpj:'', tel:'', logo:'' };
+  persistir();
+}
+
+const brl = v => 'R$ ' + (Number(v)||0).toFixed(2).replace('.', ',');
+const brlShort = v => { const n = Number(v)||0; return n >= 1000 ? 'R$ ' + (n/1000).toFixed(1).replace('.', ',') + 'k' : 'R$ ' + n.toFixed(0); };
+const ymdLocal = d => { d=new Date(d); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+const hojeISO = () => ymdLocal(new Date());
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function prazoBadge(p){ if(!p.prazo||p.status==='entregue') return ''; const dias=Math.round((new Date(p.prazo+'T00:00')-new Date(hojeISO()+'T00:00'))/864e5); const [y,m,d]=p.prazo.split('-'); const cls=dias<0?'bg-red-100 text-red-600':dias<=2?'bg-orange-100 text-orange-700':'bg-gray-100 text-gray-500'; const rot=dias<0?`Atrasado ${-dias}d`:dias===0?'Hoje':dias===1?'Amanhã':`${d}/${m}`; return `<span class="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${cls}">⏰ ${rot}</span>`; }
+const uid = () => Date.now() + Math.floor(Math.random()*1000);
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity = '1';
+  clearTimeout(t._to); t._to = setTimeout(()=> t.style.opacity = '0', 2400);
+}
+
+function abrirModal(id){ document.getElementById(id).classList.remove('hidden'); document.getElementById(id).classList.add('flex'); }
+function fecharModal(id){ document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
+function mascaraCnpj(el){ let v = el.value.replace(/\D/g,'').slice(0,14); v = v.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d)/,'.$1/$2').replace(/(\d{4})(\d)/,'$1-$2'); el.value = v; }
+
+function toggleDarkMode(){
+  document.documentElement.classList.toggle('dark');
+  const isDark = document.documentElement.classList.contains('dark');
+  localStorage.setItem('atelie_dark', isDark);
+  document.getElementById('btnDark').textContent = isDark ? '☀️' : '🌙';
+}
+if(localStorage.getItem('atelie_dark') === 'true'){ document.documentElement.classList.add('dark'); document.getElementById('btnDark').textContent = '☀️'; }
+
+function trocarView(view, btn){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+view).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b=>{ b.classList.remove('text-brand-600'); b.classList.add('text-gray-400'); });
+  if(btn){ btn.classList.remove('text-gray-400'); btn.classList.add('text-brand-600'); }
+  window.scrollTo({top:0, behavior:'smooth'});
+  render();
+}
+
+function verificaAbaFab(){
+  const isOrcamento = document.getElementById('view-orcamentos').classList.contains('active');
+  if(isOrcamento) abrirModalOrcamento(); else abrirModalPedido();
+}
+
+function calcFaturamento(){
+  const agora = new Date(); const hoje = hojeISO();
+  const iniSem = new Date(agora); iniSem.setDate(agora.getDate()-agora.getDay()); iniSem.setHours(0,0,0,0);
+  const iniMes = new Date(agora.getFullYear(), agora.getMonth(), 1);
+  let fatHoje=0, fatSemana=0, fatMes=0, custoMes=0, fatAno=0;
+  DB.pedidos.forEach(p=>{
+    if(p.status !== 'entregue') return;
+    const ref = p.dataEntrega || p.data; const d = new Date(ref);
+    if(ymdLocal(ref) === hoje) fatHoje += p.valor;
+    if(d >= iniSem) fatSemana += p.valor;
+    if(d >= iniMes){ fatMes += p.valor; custoMes += p.custo||0; }
+    if(d.getFullYear() === agora.getFullYear()) fatAno += p.valor;
+  });
+  return { fatHoje, fatSemana, fatMes, lucro: fatMes-custoMes, fatAno };
+}
+function renderDashboard(){
+  const agora = new Date();
+  const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']; const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  document.getElementById('headerDate').textContent = `${dias[agora.getDay()]}, ${agora.getDate()} ${meses[agora.getMonth()]}`;
+
+  const { fatHoje, fatSemana, fatMes, lucro, fatAno } = calcFaturamento();
+  document.getElementById('heroFaturamento').textContent = brl(fatMes);
+  document.getElementById('fatHoje').textContent = brlShort(fatHoje);
+  document.getElementById('fatSemana').textContent = brlShort(fatSemana);
+  document.getElementById('lucroMini').textContent = brlShort(lucro);
+
+  const iniMes = new Date(agora.getFullYear(), agora.getMonth(), 1);
+  const despMes = DB.movimentacoes.filter(m=>m.tipo==='saida' && new Date(m.data)>=iniMes).reduce((t,m)=>t+m.valor,0);
+  document.getElementById('heroDelta').textContent = `Despesas: ${brl(despMes)} · Líquido: ${brl(fatMes-despMes)}`;
+  document.getElementById('meiAnoLabel').textContent = agora.getFullYear();
+  const teto = tetoMei(agora.getFullYear()); const pct = Math.min(100, (fatAno / teto) * 100);
+  document.getElementById('meiAcumulado').textContent = brl(fatAno);
+  document.getElementById('meiBar').style.width = pct.toFixed(1) + '%';
+  document.getElementById('meiPct').textContent = pct.toFixed(1) + '% consumido';
+  document.getElementById('meiRestante').textContent = brl(Math.max(0, teto - fatAno)) + ' restantes';
+
+  const mm = mesesMei(agora.getFullYear()); const media = fatAno / mm.ativos;
+  document.getElementById('meiMediaMes').textContent = brlShort(media);
+  const proj = media * mm.total;
+  document.getElementById('meiProjecao').textContent = brlShort(proj);
+  document.getElementById('meiProjecao').style.color = proj > teto ? '#E84393' : 'inherit';
+
+  const bar = document.getElementById('meiBar'), badge = document.getElementById('meiBadge'), alerta = document.getElementById('meiAlerta');
+  if(pct >= 100){ bar.className='h-full rounded-full bg-red-500'; badge.className='px-3 py-1.5 rounded-full text-[10px] font-bold bg-red-500 text-white'; badge.textContent='ESTOUROU'; alerta.classList.remove('hidden'); alerta.innerHTML = fatAno > teto*1.2 ? '🚨 Mais de 20% acima do teto: risco de desenquadramento retroativo do MEI. Procure seu contador urgente.' : `🚨 Teto ultrapassado em ${brl(fatAno-teto)}. Até ${brl(teto*1.2)} (20% acima) você paga a diferença no DAS; acima disso perde o MEI. Procure seu contador.`; }
+  else if(pct >= 80){ bar.className='h-full rounded-full bg-orange-400'; badge.className='px-3 py-1.5 rounded-full text-[10px] font-bold bg-orange-100 text-orange-700'; badge.textContent='ATENÇÃO'; alerta.classList.remove('hidden'); alerta.innerHTML=`⚠️ ${pct.toFixed(0)}% do teto. Faltam ${brl(teto-fatAno)}.`; }
+  else { bar.className='h-full rounded-full bg-green-400'; badge.className='px-3 py-1.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700'; badge.textContent='OK'; alerta.classList.add('hidden'); }
+
+  const statusInfo = [{k:'producao',n:'Em Produção',i:'⚙️',c:'#7C5CFF'},{k:'arte',n:'Aguard. Arte',i:'🎨',c:'#E84393'},{k:'pronto',n:'Pronto',i:'✅',c:'#16A34A'},{k:'entregue',n:'Entregue',i:'📦',c:'#64748B'}];
+  document.getElementById('statusGrid').innerHTML = statusInfo.map(s=>{
+    const q = DB.pedidos.filter(p=>p.status===s.k).length;
+    return `<div onclick="filtrarPedidos('${s.k}');document.querySelectorAll('nav button')[2].click()" class="bg-white rounded-[18px] p-4 shadow-sm border relative cursor-pointer active:scale-95" style="border-left:4px solid ${s.c}"><span class="text-xl block mb-2">${s.i}</span><div class="font-display text-[26px] font-extrabold leading-none" style="color:${s.c}">${q}</div><div class="text-[11px] font-semibold text-gray-500 mt-1">${s.n}</div></div>`;
+  }).join('');
+
+  const baixos = DB.estoque.filter(e=>e.qtd <= e.min);
+  document.getElementById('alertasEstoque').innerHTML = baixos.length === 0 ? `<div class="bg-white rounded-2xl p-6 text-center border border-dashed text-gray-400 text-sm">✅ Estoque em dia!</div>` : baixos.map(e=>`<div class="bg-orange-50 border border-orange-200 rounded-2xl p-3 flex items-center gap-3"><span class="text-xl">⚠️</span><div><div class="text-[13px] font-bold text-orange-900">${e.nome}</div><div class="text-[11px] text-orange-700">Restam ${e.qtd} ${e.unid}</div></div></div>`).join('');
+}
+
+function renderClientes(){
+  const busca = document.getElementById('buscaCliente').value.toLowerCase();
+  const filt = DB.clientes.filter(c=>c.nome.toLowerCase().includes(busca));
+  document.getElementById('cliResumo').textContent = `${DB.clientes.length} clientes`;
+  document.getElementById('listaClientes').innerHTML = filt.length===0 ? `<div class="text-center p-6 text-gray-400">Nenhum cliente.</div>` : filt.map(c=>`<div class="bg-white rounded-2xl p-4 shadow-sm border flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-brand-500 text-white font-bold flex items-center justify-center">${esc(c.nome[0])}</div><div class="flex-1" onclick="editarCliente(${c.id})"><div class="font-bold text-sm">${esc(c.nome)}</div><div class="text-xs text-gray-500">${DB.pedidos.filter(p=>p.clienteId===c.id).length} pedidos</div></div>${c.whats ? `<a href="https://wa.me/55${c.whats.replace(/\D/g,'')}" target="_blank" class="w-8 h-8 rounded-lg bg-green-100 text-green-600 flex items-center justify-center">💬</a>` : ''}</div>`).join('');
+}
+
+let filtroPedidoAtual = 'todos';
+function filtrarPedidos(f){
+  filtroPedidoAtual = f;
+  document.querySelectorAll('[data-filter-btn]').forEach(b=>b.className = b.dataset.filterBtn === f ? 'flex-shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-ink text-white' : 'flex-shrink-0 px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-white text-gray-500 border');
+  renderPedidos();
+}
+function renderPedidos(){
+  const ativos = DB.pedidos.filter(p=>p.status !== 'entregue');
+  document.getElementById('pedResumo').textContent = `${ativos.length} pedidos ativos`;
+  let lista = filtroPedidoAtual === 'todos' ? DB.pedidos.filter(p=>p.status !== 'entregue').concat(DB.pedidos.filter(p=>p.status === 'entregue')) : DB.pedidos.filter(p=>p.status === filtroPedidoAtual);
+  const _k=p=>(p.status==='entregue'?'1':'0')+(p.prazo||'9999-99-99'); lista=lista.slice().sort((a,b)=>_k(a)<_k(b)?-1:_k(a)>_k(b)?1:0);
+  const bInfo = {arte:{c:'bg-pink-100 text-pink-600',l:'🎨 Arte'},producao:{c:'bg-purple-100 text-purple-700',l:'⚙️ Produção'},pronto:{c:'bg-green-100 text-green-700',l:'✅ Pronto'},entregue:{c:'bg-gray-100 text-gray-600',l:'📦 Entregue'}};
+  
+  document.getElementById('listaPedidos').innerHTML = lista.length===0 ? `<div class="text-center p-6 text-gray-400">Nenhum pedido.</div>` : lista.map(p=>{
+    const b = bInfo[p.status];
+    const cli = DB.clientes.find(c=>c.id === p.clienteId);
+    return `<div class="bg-white rounded-2xl p-4 shadow-sm border mb-2">
+      <div class="flex justify-between mb-2"><div><div class="font-bold text-sm">${esc(p.clienteNome)}</div><div class="text-xs text-gray-500">${esc(p.produto)}</div>${prazoBadge(p)}</div><div class="text-right"><div class="font-display font-bold">${brl(p.valor)}</div></div></div>
+      <div class="flex items-center justify-between mt-2">
+        <span class="text-[10px] font-bold px-2 py-1 rounded-full ${b.c}">${b.l}</span>
+        <div class="flex gap-1">
+          ${cli && cli.whats ? `<button onclick="prepararNotificacao(${p.id})" class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg">💬 Avisar</button>` : ''}
+          ${p.status !== 'entregue' ? `<button onclick="avancarStatus(${p.id})" class="text-[10px] font-bold text-brand-600 bg-brand-50 px-2 py-1 rounded-lg">Avançar ▸</button>` : `<button onclick="abrirRecibo(${p.id})" class="text-[10px] font-bold text-green-700 bg-green-50 px-2 py-1 rounded-lg">🧾 Recibo</button>`}
+          <button onclick="editarPedido(${p.id})" class="text-[10px] font-bold text-gray-500 bg-gray-50 px-2 py-1 rounded-lg">Editar</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderOrcamentos(){
+  document.getElementById('orcResumo').textContent = `${DB.orcamentos.length} orçamentos`;
+  document.getElementById('listaOrcamentos').innerHTML = DB.orcamentos.length===0 ? `<div class="text-center p-6 text-gray-400">Nenhum orçamento.</div>` : DB.orcamentos.map(o=>`
+    <div class="bg-white rounded-2xl p-4 shadow-sm border mb-2 flex justify-between items-center">
+      <div><div class="font-bold text-sm">${esc(o.clienteNome)}</div><div class="text-xs text-gray-500">${esc(o.produto)}</div><div class="font-bold text-brand-600 text-sm mt-1">${brl(o.valor)}</div></div>
+      <div class="flex flex-col gap-1">
+        <button onclick="enviarOrcamento(${o.id})" class="text-[10px] bg-green-50 text-green-700 font-bold px-3 py-1.5 rounded-lg">💬 Enviar</button>
+        <button onclick="aprovarOrcamento(${o.id})" class="text-[10px] bg-green-100 text-green-700 font-bold px-3 py-1.5 rounded-lg">Aprovar</button>
+        <button onclick="excluirOrcamento(${o.id})" class="text-[10px] bg-red-50 text-red-500 font-bold px-3 py-1.5 rounded-lg">Excluir</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderEstoque(){
+  document.getElementById('estResumo').textContent = `${DB.estoque.length} insumos`;
+  document.getElementById('listaEstoque').innerHTML = DB.estoque.length===0 ? `<div class="text-center p-6 text-gray-400">Nenhum insumo.</div>` : DB.estoque.map(e=>`<div class="bg-white rounded-2xl p-4 shadow-sm border flex justify-between items-center cursor-pointer mb-2" onclick="editarInsumo(${e.id})"><div><div class="font-bold text-sm">${esc(e.nome)}</div><div class="text-xs text-gray-500">Mín: ${e.min} ${esc(e.unid)}</div></div><div class="font-bold ${e.qtd <= e.min ? 'text-red-500' : 'text-green-600'}">${e.qtd} ${esc(e.unid)}</div></div>`).join('');
+}
+
+function renderFinanceiro(){
+  const fMes = parseInt(document.getElementById('filtroMes').value);
+  const fAno = parseInt(document.getElementById('filtroAno').value) || new Date().getFullYear();
+  if(!document.getElementById('filtroAno').value){ document.getElementById('filtroMes').value = new Date().getMonth(); document.getElementById('filtroAno').value = new Date().getFullYear(); }
+
+  let rec=0, desp=0;
+  const movs = DB.movimentacoes.filter(m=>{ const d = new Date(m.data); return d.getMonth() === fMes && d.getFullYear() === fAno; }).sort((a,b)=>new Date(b.data)-new Date(a.data));
+  movs.forEach(m=>{ if(m.tipo==='entrada') rec+=m.valor; else desp+=m.valor; });
+
+  document.getElementById('finReceitas').textContent = brlShort(rec);
+  document.getElementById('finDespesas').textContent = brlShort(desp);
+  document.getElementById('finSaldo').textContent = brlShort(rec-desp);
+  document.getElementById('finResumo').textContent = `Saldo: ${brl(rec-desp)}`;
+  document.getElementById('finMovCount').textContent = `${movs.length} mov.`;
+
+  document.getElementById('listaMovimentacoes').innerHTML = movs.length===0 ? `<div class="text-center p-6 text-gray-400">Nenhuma movimentação.</div>` : movs.map(m=>`<div class="bg-white rounded-2xl p-3 border flex justify-between mb-2"><div><div class="font-bold text-sm">${esc(m.desc)}</div><div class="text-xs text-gray-500">${esc(m.cat)} ${m.pgto ? '· '+esc(m.pgto) : ''} - ${new Date(m.data).toLocaleDateString('pt-BR')}</div></div><div class="text-right"><div class="font-bold ${m.tipo==='entrada'?'text-green-600':'text-red-500'}">${m.tipo==='entrada'?'+':'-'}${brl(m.valor)}</div><button onclick="excluirMov(${m.id})" class="text-[10px] text-gray-400 underline">excluir</button></div></div>`).join('');
+
+  const fatMes = Array(12).fill(0);
+  DB.pedidos.forEach(p=>{ if(p.status==='entregue'){ const d=new Date(p.data); if(d.getFullYear()===fAno) fatMes[d.getMonth()]+=p.valor; }});
+  const totalAno = fatMes.reduce((a,b)=>a+b,0);
+  document.getElementById('meiAnoHist').textContent = fAno;
+  document.getElementById('meiHistTotal').textContent = brl(totalAno);
+  document.getElementById('meiHistPct').textContent = ((totalAno/tetoMei(fAno))*100).toFixed(1);
+  const maxM = Math.max(...fatMes, 1);
+  document.getElementById('meiHistMeses').innerHTML = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'].map((m,i)=>{ const v=fatMes[i]; const h=(v/maxM)*100; return `<div class="flex items-center gap-2 opacity-${i>new Date().getMonth()&&fAno===new Date().getFullYear()?'40':'100'}"><div class="w-6 text-[10px] font-bold text-gray-400">${m}</div><div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden"><div class="h-full ${i===fMes?'bg-brand-500':'bg-brand-300'}" style="width:${h}%"></div></div><div class="w-12 text-right text-[10px] font-bold">${v>0?brlShort(v):'-'}</div></div>`}).join('');
+}
+
+function renderHeader(){
+  const emp = DB.empresa;
+  document.getElementById('headerEmpresaNome').textContent = emp.fantasia || emp.nome || 'Ateliê';
+  if(emp.logo){ document.getElementById('headerLogoContainer').innerHTML = `<img src="${emp.logo}" class="w-full h-full object-cover">`; }
+}
+
+function render(){
+  renderHeader();
+  try { avisoBackup(); } catch(e){}
+  try { renderDashboard(); } catch(e){}
+  try { renderClientes(); } catch(e){}
+  try { renderPedidos(); } catch(e){}
+  try { renderOrcamentos(); } catch(e){}
+  try { renderEstoque(); } catch(e){}
+  try { renderFinanceiro(); } catch(e){}
+}
+
+// CRUD CLIENTE
+function abrirModalCliente(){ document.getElementById('cliId').value=''; document.getElementById('cliNome').value=''; document.getElementById('cliWhats').value=''; document.getElementById('btnExcluirCliente').classList.add('hidden'); abrirModal('modalCliente'); }
+function editarCliente(id){ const c=DB.clientes.find(x=>x.id===id); if(!c) return; document.getElementById('cliId').value=c.id; document.getElementById('cliNome').value=c.nome; document.getElementById('cliWhats').value=c.whats||''; document.getElementById('btnExcluirCliente').classList.remove('hidden'); abrirModal('modalCliente'); }
+function salvarCliente(){ const id=document.getElementById('cliId').value; const nome=document.getElementById('cliNome').value.trim(); const whats=document.getElementById('cliWhats').value.replace(/\D/g,''); if(!nome) return toast('Digite o nome'); if(id){ const c=DB.clientes.find(x=>x.id==id); Object.assign(c,{nome,whats}); } else { DB.clientes.push({id:uid(),nome,whats}); } persistir(); fecharModal('modalCliente'); render(); toast('Salvo ✓'); }
+function excluirCliente(){ const id=document.getElementById('cliId').value; const n=DB.pedidos.filter(p=>p.clienteId==id).length; if(!confirm(n?`Este cliente tem ${n} pedido(s) no histórico (serão mantidos). Excluir mesmo assim?`:'Excluir cliente?')) return; DB.clientes = DB.clientes.filter(c=>c.id!=id); persistir(); fecharModal('modalCliente'); render(); }
+
+function abrirModalClienteRapido(){ document.getElementById('crNome').value=''; document.getElementById('crWhats').value=''; abrirModal('modalClienteRapido'); }
+function salvarClienteRapido(){ const nome=document.getElementById('crNome').value.trim(); const whats=document.getElementById('crWhats').value.replace(/\D/g,''); if(!nome) return toast('Digite o nome'); const nc = {id:uid(),nome,whats}; DB.clientes.push(nc); persistir(); fecharModal('modalClienteRapido'); const selPed = document.getElementById('pedCliente'); const selOrc = document.getElementById('orcCliente'); if(selPed) selPed.value=nc.id; if(selOrc) selOrc.value=nc.id; render(); toast('Cliente criado ✓'); }
+
+// CRUD PEDIDO
+function preencherSelect(id){ const sel=document.getElementById(id); if(!sel) return; sel.innerHTML = '<option value="">— Selecione —</option>' + DB.clientes.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join(''); }
+function abrirModalPedido(){ preencherSelect('pedCliente'); document.getElementById('pedId').value=''; document.getElementById('pedProduto').value=''; document.getElementById('pedPrazo').value=''; document.getElementById('pedValor').value=''; document.getElementById('pedCusto').value=''; document.getElementById('pedSinal').checked=false; document.getElementById('pedStatus').value='arte'; document.getElementById('wrapSinalPct').classList.add('hidden'); document.getElementById('sinalInfo').classList.add('hidden'); document.getElementById('btnExcluirPedido').classList.add('hidden'); abrirModal('modalPedido'); }
+function editarPedido(id){ const p=DB.pedidos.find(x=>x.id===id); if(!p) return; preencherSelect('pedCliente'); document.getElementById('pedId').value=p.id; document.getElementById('pedCliente').value=p.clienteId||''; document.getElementById('pedProduto').value=p.produto; document.getElementById('pedPrazo').value=p.prazo||''; document.getElementById('pedValor').value=p.valor; document.getElementById('pedCusto').value=p.custo; document.getElementById('pedStatus').value=p.status; document.getElementById('pedSinal').checked=!!p.sinalPago; document.getElementById('pedSinalPct').value=p.sinalPct||50; updateSinalInfo(); document.getElementById('btnExcluirPedido').classList.remove('hidden'); abrirModal('modalPedido'); }
+function updateSinalInfo(){ const v=parseFloat(document.getElementById('pedValor').value)||0; const c=document.getElementById('pedSinal').checked; const w=document.getElementById('wrapSinalPct'); const info=document.getElementById('sinalInfo'); if(c){ w.classList.remove('hidden'); const pct=parseFloat(document.getElementById('pedSinalPct').value)||50; info.classList.remove('hidden'); info.innerHTML=`Sinal: <b>${brl(v*(pct/100))}</b> | Resta: <b>${brl(v*(1-pct/100))}</b>`; } else { w.classList.add('hidden'); info.classList.add('hidden'); } }
+function salvarPedido(){
+  const id=document.getElementById('pedId').value;
+  const cid=Number(document.getElementById('pedCliente').value);
+  const c=DB.clientes.find(x=>x.id===cid); if(!c) return toast('Selecione o cliente');
+  const produto=document.getElementById('pedProduto').value.trim(); if(!produto) return toast('Informe o produto');
+  const valor=parseFloat(document.getElementById('pedValor').value)||0;
+  const custo=parseFloat(document.getElementById('pedCusto').value)||0;
+  const sinalPago=document.getElementById('pedSinal').checked;
+  const sinalPct=Math.min(100,Math.max(1,parseFloat(document.getElementById('pedSinalPct').value)||50));
+  const prazo=document.getElementById('pedPrazo').value||'';
+  let status=document.getElementById('pedStatus').value;
+  let p=id?DB.pedidos.find(x=>x.id==id):null;
+  const pedirPgto = status==='entregue' && (!p || p.status!=='entregue');
+  if(pedirPgto) status = p ? p.status : 'pronto';
+  if(p){ Object.assign(p,{clienteId:cid,clienteNome:c.nome,produto,valor,custo,status,sinalPago,sinalPct,prazo}); }
+  else { p={id:uid(),clienteId:cid,clienteNome:c.nome,produto,valor,custo,status,sinalPago,sinalPct,prazo,data:new Date().toISOString()}; DB.pedidos.unshift(p); }
+  if(sinalPago && !p.sinalReg){ p.sinalReg=valor*sinalPct/100; DB.movimentacoes.unshift({id:uid(),tipo:'entrada',desc:`Sinal Pedido #${p.id} - ${p.clienteNome}`,valor:p.sinalReg,cat:'Pedido',pgto:'Sinal',data:new Date().toISOString()}); }
+  persistir(); fecharModal('modalPedido'); render(); toast('Salvo ✓');
+  if(pedirPgto){ window._pedidoParaBaixa=p; abrirModal('modalPagamento'); }
+}
+function excluirPedido(){ const id=document.getElementById('pedId').value; if(!confirm('Excluir?')) return; DB.pedidos=DB.pedidos.filter(x=>x.id!=id); persistir(); fecharModal('modalPedido'); render(); }
+function avancarStatus(id){ const p=DB.pedidos.find(x=>x.id===id); if(!p) return; const ordem=['arte','producao','pronto','entregue']; const next=ordem[(ordem.indexOf(p.status)+1)%4]; if(next==='entregue'){ window._pedidoParaBaixa = p; abrirModal('modalPagamento'); } else { p.status=next; persistir(); render(); toast('Status alterado ✓'); } }
+function confirmarPagamento(forma){
+  const p=window._pedidoParaBaixa; if(!p) return;
+  const agora=new Date().toISOString();
+  p.status='entregue'; p.formaPagamento=forma; p.dataEntrega=agora;
+  if(p.sinalPago && !p.sinalReg){ p.sinalReg=p.valor*(p.sinalPct||50)/100; DB.movimentacoes.unshift({id:uid(),tipo:'entrada',desc:`Sinal Pedido #${p.id} - ${p.clienteNome}`,valor:p.sinalReg,cat:'Pedido',pgto:'Sinal',data:agora}); }
+  const restante=p.valor-(p.sinalReg||0);
+  if(restante>0) DB.movimentacoes.unshift({id:uid(),tipo:'entrada',desc:`Pedido #${p.id} - ${p.clienteNome}`,valor:restante,cat:'Pedido',pgto:forma,data:agora});
+  window._pedidoParaBaixa=null; persistir(); render(); fecharModal('modalPagamento'); setTimeout(()=>abrirRecibo(p.id),300); toast('Pedido finalizado ✓');
+}
+
+// CRUD ORÇAMENTO
+function abrirModalOrcamento(){ preencherSelect('orcCliente'); document.getElementById('orcProduto').value=''; document.getElementById('orcValor').value=''; abrirModal('modalOrcamento'); }
+function salvarOrcamento(){ const cid=Number(document.getElementById('orcCliente').value); const c=DB.clientes.find(x=>x.id===cid); if(!c) return toast('Selecione o cliente'); const desc=document.getElementById('orcProduto').value; const val=parseFloat(document.getElementById('orcValor').value)||0; DB.orcamentos.push({id:uid(),clienteId:cid,clienteNome:c.nome,produto:desc,valor:val,data:new Date().toISOString()}); persistir(); fecharModal('modalOrcamento'); render(); toast('Orçamento salvo ✓'); }
+function excluirOrcamento(id){ if(!confirm('Excluir orçamento?')) return; DB.orcamentos=DB.orcamentos.filter(x=>x.id!==id); persistir(); render(); }
+function aprovarOrcamento(id){ const o=DB.orcamentos.find(x=>x.id===id); if(!o) return; DB.orcamentos=DB.orcamentos.filter(x=>x.id!==id); DB.pedidos.unshift({id:uid(),clienteId:o.clienteId,clienteNome:o.clienteNome,produto:o.produto,valor:o.valor,custo:0,status:'arte',sinalPago:false,data:new Date().toISOString()}); persistir(); render(); toast('Virou Pedido! ✓'); }
+
+function enviarOrcamento(id){ const o=DB.orcamentos.find(x=>x.id===id); if(!o) return; const cli=DB.clientes.find(c=>c.id===o.clienteId); if(!cli||!cli.whats) return toast('Cliente sem WhatsApp'); const emp=DB.empresa.fantasia||DB.empresa.nome||'Ateliê'; const txt=`Olá ${o.clienteNome}! Segue o orçamento do ${emp}:\n\n${o.produto}\nValor: ${brl(o.valor)}\n\nPodemos fechar? 😊`; window.open(`https://wa.me/55${cli.whats.replace(/\D/g,'')}?text=${encodeURIComponent(txt)}`,'_blank'); }
+
+// CRUD INSUMO
+function abrirModalInsumo(){ document.getElementById('insId').value=''; document.getElementById('insNome').value=''; document.getElementById('insQtd').value=''; document.getElementById('insMin').value=''; document.getElementById('btnExcluirInsumo').classList.add('hidden'); abrirModal('modalInsumo'); }
+function editarInsumo(id){ const e=DB.estoque.find(x=>x.id===id); if(!e) return; document.getElementById('insId').value=e.id; document.getElementById('insNome').value=e.nome; document.getElementById('insQtd').value=e.qtd; document.getElementById('insMin').value=e.min; document.getElementById('btnExcluirInsumo').classList.remove('hidden'); abrirModal('modalInsumo'); }
+function salvarInsumo(){ const id=document.getElementById('insId').value; const nome=document.getElementById('insNome').value; if(!nome) return; const obj={nome,qtd:parseInt(document.getElementById('insQtd').value)||0,min:parseInt(document.getElementById('insMin').value)||0,unid:((id&&DB.estoque.find(x=>x.id==id))||{}).unid||'un'}; if(id){ Object.assign(DB.estoque.find(x=>x.id==id),obj); } else { DB.estoque.push({id:uid(),...obj}); } persistir(); fecharModal('modalInsumo'); render(); toast('Salvo ✓'); }
+function excluirInsumo(){ const id=document.getElementById('insId').value; if(!confirm('Excluir?')) return; DB.estoque=DB.estoque.filter(x=>x.id!=id); persistir(); fecharModal('modalInsumo'); render(); }
+
+function excluirMov(id){ if(!confirm('Excluir este lançamento do caixa?')) return; DB.movimentacoes=DB.movimentacoes.filter(m=>m.id!==id); persistir(); render(); toast('Lançamento excluído'); }
+
+// CRUD DESPESA
+function abrirModalDespesa(){ document.getElementById('desDesc').value=''; document.getElementById('desValor').value=''; abrirModal('modalDespesa'); }
+function salvarDespesa(){ const desc=document.getElementById('desDesc').value; const val=parseFloat(document.getElementById('desValor').value)||0; const cat=document.getElementById('desCat').value; const pgto=document.getElementById('desPgto').value; if(!desc||val<=0) return; DB.movimentacoes.unshift({id:uid(),tipo:'saida',desc,valor:val,cat,pgto,data:new Date().toISOString()}); persistir(); fecharModal('modalDespesa'); render(); toast('Despesa salva ✓'); }
+
+// EMPRESA
+function abrirModalEmpresa(){ const e=DB.empresa; document.getElementById('empNome').value=e.nome||''; document.getElementById('empFantasia').value=e.fantasia||''; document.getElementById('empCnpj').value=e.cnpj||''; document.getElementById('empTel').value=e.tel||''; document.getElementById('empMeiInicio').value=e.meiInicio||''; renderPreviewLogo(e.logo); abrirModal('modalEmpresa'); }
+function renderPreviewLogo(url){ const p=document.getElementById('previewLogo'); p.innerHTML=url?`<img src="${url}" class="w-full h-full object-cover">`:`<span class="text-gray-400">📷</span>`; }
+function processarLogo(input){ const f=input.files[0]; if(!f) return; const r=new FileReader(); r.onload=e=>{ const img=new Image(); img.onload=()=>{ const k=Math.min(1,256/Math.max(img.width,img.height)); const cv=document.createElement('canvas'); cv.width=Math.round(img.width*k); cv.height=Math.round(img.height*k); cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height); const url=cv.toDataURL('image/png'); renderPreviewLogo(url); DB.empresa.logo=url; }; img.src=e.target.result; }; r.readAsDataURL(f); }
+function salvarEmpresa(){ DB.empresa.nome=document.getElementById('empNome').value; DB.empresa.fantasia=document.getElementById('empFantasia').value; DB.empresa.cnpj=document.getElementById('empCnpj').value; DB.empresa.tel=document.getElementById('empTel').value; DB.empresa.meiInicio=document.getElementById('empMeiInicio').value; persistir(); fecharModal('modalEmpresa'); render(); toast('Salvo ✓'); }
+
+// RECIBO
+let reciboAtual=null;
+function abrirRecibo(id){ const p=DB.pedidos.find(x=>x.id===id); if(!p) return; reciboAtual=p; document.getElementById('recEmpresaNome').textContent=DB.empresa.nome; document.getElementById('recEmpresaCnpj').textContent=DB.empresa.cnpj; document.getElementById('recCliente').textContent=p.clienteNome; document.getElementById('recProduto').textContent=p.produto; document.getElementById('recData').textContent=new Date(p.dataEntrega||p.data).toLocaleDateString('pt-BR'); document.getElementById('recValor').textContent=brl(p.valor); const sinal=p.sinalReg||0; document.getElementById('recRestante').textContent=brl(p.valor-sinal); abrirModal('modalRecibo'); }
+function gerarPDF(){ html2pdf().set({margin:0,filename:'recibo.pdf',html2canvas:{scale:2},jsPDF:{unit:'mm',format:'a4'}}).from(document.getElementById('printArea')).save().then(()=>toast('PDF gerado ✓')); }
+function copiarEmail(){ const p=reciboAtual; if(!p) return; const emp=DB.empresa.fantasia||DB.empresa.nome||''; const sn=p.sinalReg||0; const txt=`RECIBO — ${emp}\nCliente: ${p.clienteNome}\nProduto: ${p.produto}\nData: ${new Date(p.dataEntrega||p.data).toLocaleDateString('pt-BR')}\nValor total: ${brl(p.valor)}`+(sn?`\nSinal: ${brl(sn)}\nRestante: ${brl(p.valor-sn)}`:''); (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('Recibo copiado ✓')).catch(()=>toast('Não foi possível copiar')); }
+
+// NOTIFICAÇÃO WHATSAPP
+let pedidoParaAviso = null;
+function prepararNotificacao(id){ pedidoParaAviso = DB.pedidos.find(x=>x.id===id); if(!pedidoParaAviso) return; abrirModal('modalNotificacao'); }
+function enviarWhats(msg){ const p = pedidoParaAviso; if(!p) return; const cli = DB.clientes.find(c=>c.id===p.clienteId); if(!cli || !cli.whats) return toast('Cliente sem WhatsApp'); const txt = encodeURIComponent(`Olá ${p.clienteNome}, ${msg}`); window.open(`https://wa.me/55${cli.whats.replace(/\D/g,'')}?text=${txt}`, '_blank'); fecharModal('modalNotificacao'); }
+
+// CALCULADORAS
+function abrirCalc3D(){ abrirModal('modalCalc3D'); calc3D(); }
+function calc3D(){ const p=parseFloat(document.getElementById('c3dPeso').value)||0,h=parseFloat(document.getElementById('c3dHoras').value)||0,c=parseFloat(document.getElementById('c3dCustoG').value)||0,e=parseFloat(document.getElementById('c3dEnergia').value)||0,m=parseFloat(document.getElementById('c3dMargem').value)||0; const custo=(p*c)+(h*e); document.getElementById('c3dResCusto').textContent=brl(custo); document.getElementById('c3dResFinal').textContent=brl(custo*(1+m/100)); window._preco3D=custo*(1+m/100); }
+function usarCalc3D(){ fecharModal('modalCalc3D'); abrirModalPedido(); document.getElementById('pedValor').value=(window._preco3D||0).toFixed(2); document.getElementById('pedProduto').value='Impressão 3D'; updateSinalInfo(); }
+function abrirCalcMedidas(){ abrirModal('modalCalcMedidas'); calcMedidas(); }
+function calcMedidas(){ const l=parseFloat(document.getElementById('cmLarg').value)||0,a=parseFloat(document.getElementById('cmAlt').value)||0,p=parseFloat(document.getElementById('cmPrecoM2').value)||0,m=parseFloat(document.getElementById('cmMargem').value)||0; const custo=(l*a/10000)*p; document.getElementById('cmResCusto').textContent=brl(custo); document.getElementById('cmResFinal').textContent=brl(custo*(1+m/100)); window._precoMed=custo*(1+m/100); }
+function usarCalcMedidas(){ fecharModal('modalCalcMedidas'); abrirModalPedido(); document.getElementById('pedValor').value=(window._precoMed||0).toFixed(2); document.getElementById('pedProduto').value='Serviços Gráficos'; updateSinalInfo(); }
+
+// BACKUP E NOTAS
+function exportData(){ const b=new Blob([JSON.stringify(DB,null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=`atelie-backup-${hojeISO()}.json`; a.click(); localStorage.setItem('atelie_backup_em',Date.now()); render(); toast('Backup baixado ✓'); }
+function importData(){ const i=document.createElement('input'); i.type='file'; i.accept='.json'; i.onchange=e=>{ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ try{ const d=JSON.parse(ev.target.result); if(!Array.isArray(d.clientes)||!Array.isArray(d.pedidos)) return toast('Arquivo inválido'); if(!confirm('Isso vai SUBSTITUIR todos os dados atuais pelo backup. Continuar?')) return; DB.clientes=d.clientes; DB.pedidos=d.pedidos; DB.orcamentos=d.orcamentos||[]; DB.estoque=d.estoque||[]; DB.movimentacoes=d.movimentacoes||[]; DB.empresa=d.empresa||DB.empresa; migrarSinal(); persistir(); render(); toast('Backup restaurado ✓'); }catch(err){ toast('Erro ao ler o arquivo'); } }; r.readAsText(f); }; i.click(); }
+function avisoBackup(){ const el=document.getElementById('avisoBackup'); const t=Number(localStorage.getItem('atelie_backup_em'))||0; const dias=Math.floor((Date.now()-t)/864e5); const velho=!t||dias>7; el.classList.toggle('hidden',!velho); if(velho) el.innerHTML=`💾 ${t?'Último backup há '+dias+' dias.':'Você ainda não fez backup.'} <button onclick="exportData()" class="underline font-bold">Baixar agora</button>`; }
+function salvarNotas(){ localStorage.setItem('atelie_notas', document.getElementById('blocoNotas').value); toast('Anotações salvas ✓'); }
+function carregarNotas(){ const t=localStorage.getItem('atelie_notas'); if(t) document.getElementById('blocoNotas').value=t; }
+
+// RELATÓRIO FINANCEIRO PDF
+// RELATÓRIO FINANCEIRO PDF (Livro Caixa)
+// RELATÓRIO FINANCEIRO PDF (Livro Caixa)
+function gerarRelatorioPDF(){
+  const fMes = parseInt(document.getElementById('filtroMes').value); 
+  const fAno = parseInt(document.getElementById('filtroAno').value) || new Date().getFullYear();
+  
+  // Função auxiliar para formatar em R$ 0.000,00
+  const formatarMoeda = (v) => {
+    return 'R$ ' + (Number(v) || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  let rec = 0, desp = 0, saldoInicial = 0;
+  let movs = [];
+
+  // Calcula o Saldo Inicial e filtra as movimentações
+  DB.movimentacoes.forEach(m => {
+    const d = new Date(m.data);
+    const mesMov = d.getMonth();
+    const anoMov = d.getFullYear();
+    
+    // Tudo que aconteceu ANTES do mês selecionado
+    if (anoMov < fAno || (anoMov === fAno && mesMov < fMes)) {
+      if (m.tipo === 'entrada') saldoInicial += m.valor;
+      else saldoInicial -= m.valor;
+    }
+    
+    // Movimentações do mês selecionado
+    if (anoMov === fAno && mesMov === fMes) {
+      movs.push(m);
+      if (m.tipo === 'entrada') rec += m.valor;
+      else desp += m.valor;
+    }
+  });
+
+  // Ordena as movimentações do mês pela data (mais antiga primeiro)
+  movs.sort((a, b) => new Date(a.data) - new Date(b.data));
+
+  // Monta as linhas da tabela calculando o saldo acumulado
+  let saldoCorrente = saldoInicial;
+  const linhasTabela = movs.map(m => {
+    const valor = m.valor;
+    if (m.tipo === 'entrada') saldoCorrente += valor;
+    else saldoCorrente -= valor;
+
+    const dataFmt = new Date(m.data).toLocaleDateString('pt-BR');
+    const entradasStr = m.tipo === 'entrada' ? formatarMoeda(valor) : '-';
+    const saidasStr = m.tipo === 'saida' ? formatarMoeda(valor) : '-';
+    const pgtoStr = m.pgto ? ` (${esc(m.pgto)})` : '';
+
+    return `
+      <tr>
+        <td style="padding: 6px; border: 1px solid #ddd;">${dataFmt}</td>
+        <td style="padding: 6px; border: 1px solid #ddd;">${esc(m.desc)}${pgtoStr}</td>
+        <td style="padding: 6px; border: 1px solid #ddd; text-align: right; color: #16a34a;">${entradasStr}</td>
+        <td style="padding: 6px; border: 1px solid #ddd; text-align: right; color: #dc2626;">${saidasStr}</td>
+        <td style="padding: 6px; border: 1px solid #ddd; text-align: right; color: #1d4ed8; font-weight: bold;">${formatarMoeda(saldoCorrente)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  const saldoFinal = saldoInicial + rec - desp;
+
+  // Estrutura HTML do PDF
+  const html = `
+    <div style="padding: 20px; font-family: Arial, sans-serif; color: #333;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <h2 style="margin: 0;">${DB.empresa.nome || 'Ateliê Gestão'}</h2>
+        <h3 style="margin: 5px 0; color: #555;">Livro Caixa - ${fMes+1}/${fAno}</h3>
+      </div>
+
+      <table style="width: 100%; margin-bottom: 20px; border-collapse: collapse; font-size: 14px;">
+        <tr style="background: #f3f4f6;">
+          <td style="padding: 10px; border: 1px solid #ddd; width: 30%;"><b>Saldo Inicial do Período:</b></td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: right; color: #1d4ed8; font-weight: bold;">${formatarMoeda(saldoInicial)}</td>
+        </tr>
+      </table>
+
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+          <tr style="background: #e5e7eb; text-align: left;">
+            <th style="padding: 8px; border: 1px solid #ccc; width: 12%;">Data</th>
+            <th style="padding: 8px; border: 1px solid #ccc; width: 43%;">Histórico</th>
+            <th style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 15%;">Entradas</th>
+            <th style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 15%;">Saídas</th>
+            <th style="padding: 8px; border: 1px solid #ccc; text-align: right; width: 15%;">Saldo</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${linhasTabela || '<tr><td colspan="5" style="text-align:center; padding: 20px; border: 1px solid #ddd;">Nenhuma movimentação neste período.</td></tr>'}
+        </tbody>
+        <tfoot>
+          <tr style="background: #f9fafb; font-weight: bold;">
+            <td colspan="2" style="padding: 10px; border: 1px solid #ccc; text-align: right;">Totais do Mês:</td>
+            <td style="padding: 10px; border: 1px solid #ccc; text-align: right; color: #16a34a;">${formatarMoeda(rec)}</td>
+            <td style="padding: 10px; border: 1px solid #ccc; text-align: right; color: #dc2626;">${formatarMoeda(desp)}</td>
+            <td style="padding: 10px; border: 1px solid #ccc; text-align: right; color: #1d4ed8;">${formatarMoeda(saldoFinal)}</td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <div style="margin-top: 30px; text-align: center; font-size: 11px; color: #999;">
+        Relatório gerado em ${new Date().toLocaleString('pt-BR')} pelo Ateliê Gestão.
+      </div>
+    </div>
+  `;
+
+  const el = document.createElement('div');
+  el.innerHTML = html;
+  
+  const opt = {
+    margin: 10,
+    filename: `Livro_Caixa_${fMes+1}_${fAno}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' }
+  };
+
+  html2pdf().set(opt).from(el).save().then(() => {
+    toast('Livro Caixa gerado ✓');
+  }).catch(err => {
+    console.error(err);
+    toast('Erro ao gerar o PDF.');
+  });
+}
+// INIT
+carregar(); migrarSinal(); carregarNotas(); render();
+window.addEventListener('focus', render);
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
